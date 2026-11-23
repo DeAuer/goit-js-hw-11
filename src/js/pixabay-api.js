@@ -12,5 +12,5 @@ export const getImagesByQuery = query => {
     orientation: 'horizontal',
     safesearch: true,
   };
-  return axios.get('/', { params });
+  return axios.get('/', { params }).then(response => response.data.hits);
 };
