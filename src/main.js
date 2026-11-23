@@ -1,5 +1,44 @@
-// Тут пиши JavaScript свого домашнього завдання.
-// Додаткові модулі створюй поруч у src/ і імпортуй їх сюди:
-//   import { something } from './something.js';
+import iziToast from 'izitoast';
+import 'izitoast/dist/css/iziToast.min.css';
+import { getImagesByQuery } from './js/pixabay-api.js';
+import {
+  clearGallery,
+  createGallery,
+  showLoader,
+  hideLoader,
+} from './js/render-functions.js';
 
-console.log('Шаблон готовий. Можна писати код 🚀');
+const form = document.querySelector('.form');
+const input = document.querySelector('input[name="search-text"]');
+
+form.addEventListener('submit', event => {
+  event.preventDefault();
+
+  if (input.value.trim() === '') {
+    iziToast.show({
+      message: 'Can not send an empty form!',
+    });
+    return;
+  }
+  clearGallery();
+
+  showLoader();
+  getImagesByQuery(input.value.trim())
+    .then(res => {
+      if (res.data.hits.length === 0) {
+        iziToast.show({
+          message:
+            'Sorry, there are no images matching your search query. Please try again!',
+        });
+        return;
+      }
+      createGallery(res.data.hits);
+    })
+    .catch(err => {
+      iziToast.show({
+        title: err.code,
+        message: err.message,
+      });
+    })
+    .finally(() => hideLoader());
+});
