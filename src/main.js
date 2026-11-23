@@ -32,7 +32,7 @@ form.addEventListener('submit', event => {
         });
         return;
       }
-      createGallery(res.data.hits);
+      createGallery(res);
     })
     .catch(err => {
       iziToast.show({
